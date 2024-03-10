@@ -1,0 +1,52 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{C67A5DA6-B857-4539-B086-1AC7823C42B3}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="fdmigrator.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="fdmigrator">
+        <MSBuild Projects="fdmigrator.dproj"/>
+    </Target>
+    <Target Name="fdmigrator:Clean">
+        <MSBuild Projects="fdmigrator.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="fdmigrator:Make">
+        <MSBuild Projects="fdmigrator.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="fdmigrator"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="fdmigrator:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="fdmigrator:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+    <ItemGroup Condition="'$(BuildGroup)'=='Debug'">
+        <BuildGroupProject Include="fdmigrator.dproj">
+            <ProjectGuid>{0B2E9B98-4DAB-4862-83C7-8806CC4E7190}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Win32</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+    </ItemGroup>
+    <ItemGroup Condition="'$(BuildGroup)'=='Release'">
+        <BuildGroupProject Include="fdmigrator.dproj">
+            <ProjectGuid>{0B2E9B98-4DAB-4862-83C7-8806CC4E7190}</ProjectGuid>
+            <Configurations>Release</Configurations>
+            <Platforms>Win32</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+    </ItemGroup>
+</Project>
