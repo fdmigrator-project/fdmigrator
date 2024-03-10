@@ -1,8 +1,8 @@
 # fdmigrator 
+<img src="fdmigrator.jpeg" width="100">
 
-![](fdmigrator.jpeg){width=200px}
+**Database Migration Tool** based on the powers of FireDac! 
 
-**fdmigrator: Database Migration Tool** based on the powers of FireDac
 
 **Overview:**
 fdmigrator is a versatile and user-friendly command-line tool designed to simplify the database migration process across various environments. Engineered with flexibility and simplicity at its core, fdmigrator facilitates the efficient management and execution of database migrations, ensuring seamless transitions between different database systems or versions.
