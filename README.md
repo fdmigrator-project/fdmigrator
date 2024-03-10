@@ -28,8 +28,57 @@ Enjoy a streamlined migration experience with fdmigrator, your go-to tool for ha
 
 ## Documentation
 
-Use the integrate help in the tool.
+Use the integrated help in the tool:
 
 ```powershell
 c:\>fdmigrator help
+fdmigrator v0.8.0 | (c)2024, j.cangas@pm.me
+
+Usage: fdmigrator <global options> <command> <arguments>
+
+Global Options:
+  -w <WorkDir>    Sets the working directory. Default is "./migrations".
+  -d (dry-run).   Executes the process without applying changes.
+
+Commands and Arguments:
+  init            Creates the working structure in <WorkDir>
+
+  steps           Lists the steps pending application.
+    -a            Lists all steps
+
+  status          Displays the last applied step.
+
+  new             Creates a new migration step.
+    -d            Description. Required. Used to generate the step file name
+    -t            Template to use ("table" or "default")
+
+  defs            Displays the connection names in use. Names starting with "!" are ignored.
+
+  up              Applies all pending steps.
+    -n <n>        Applies only the next <n> steps.
+
+  down            Reverts the last applied step.
+    -n <n>        Reverts the next <n> steps. Pass * for all.
+
+  help            Displays this help.
+
+Usage Examples:
+
+fdmigrator -w ./db steps list
+Uses "./db" as the working directory and lists the pending migration steps.
+
+fdmigrator -w ./db up -n 3
+Uses "./db" as the working directory and executes the next 3 pending migration steps.
+
+fdmigrator down
+Reverts the last applied migration step.
+
+fdmigrator down -n 2
+Reverts the last 2 applied migration steps.
+
+fdmigrator down -n *
+Reverts all previously applied migration steps.
+
+fdmigrator status
+Displays the last applied migration step.
 ```
