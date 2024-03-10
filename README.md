@@ -3,7 +3,6 @@
 
 **Database Migration Tool** based on the powers of FireDac! 
 
-
 **Overview:**
 fdmigrator is a versatile and user-friendly command-line tool designed to simplify the database migration process across various environments. Engineered with flexibility and simplicity at its core, fdmigrator facilitates the efficient management and execution of database migrations, ensuring seamless transitions between different database systems or versions.
 
@@ -11,6 +10,10 @@ fdmigrator is a versatile and user-friendly command-line tool designed to simpli
 - **Cross-Database Support:** Works effortlessly across multiple database systems, including MySQL, PostgreSQL, SQLite, and more, leveraging FireDAC's powerful database connectivity.
 - **Automated Migration Handling:** Automatically applies, reverts, and manages migration steps, providing a clear path from development through to production.
 - **Directives for Conditional SQL:** Utilizes FireDAC's escape sequences to write adaptable SQL scripts, making your migrations smart and flexible.
+
+I will transform coffe into code :), so please:
+ 
+<a href="https://www.buymeacoffee.com/jcangas" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 **Getting Started:**
 To get started with fdmigrator, install the  [latest release](https://github.com/jcangas/fdmigrator/releases/latest). Detailed setup instructions and examples can be found in the [Documentation](#documentation).
