@@ -32,7 +32,7 @@ Comandos y Argumentos:
 
 Ejemplos de Uso:
 
-1. {product} -w ./db steps list
+1. {product} -w ./db steps
    Usa como directorio de trabajo "./db" y lista los pasos de migración pendientes.
 
 2. {product} -w ./db up -n 3
@@ -85,7 +85,7 @@ Commands and Arguments:
 
 Usage Examples:
 
-{product} -w ./db steps list
+{product} -w ./db steps
 Uses "./db" as the working directory and lists the pending migration steps.
 
 {product} -w ./db up -n 3
