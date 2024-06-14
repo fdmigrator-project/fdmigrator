@@ -31,10 +31,8 @@ type
 
     FStatus: string;
     FDryRun: Boolean;
-    function GetStepFilesDir: string;
     function GetDefs: TArray<string>;
     function GetStatus: string;
-    procedure SetStatus(const Value: string);
     procedure LoadStatus;
     procedure SaveStatus;
     procedure OnScriptError(ASender, AInitiator: TObject;
@@ -49,21 +47,24 @@ type
     procedure SetMigratorDir(const Value: string);
     procedure Reset;
     function CreateFile(const Path, FileName: string; const Content: string = ''): Boolean;
+    procedure CheckInitDone;
+    procedure UpdateStatus(StepID: string);
   public
     constructor Create(const WorkDir: TFileName; const DryRun: Boolean);
+
+    procedure Init;
     procedure DbUp(N: Integer);
     procedure DbDown(N: Integer);
     function GetSteps(Criteria: TStepsCriteria; Reverse: Boolean = False): TArray<TStep>;
-    procedure Init;
     procedure NewStep(StepName: string; TemplateName: string='default');
 
     property MigratorDir: string read FMigratorDir write SetMigratorDir;
-    property StepFilesDir: string read GetStepFilesDir;
+    property StepFilesDir: string read FStepFilesDir;
     property ConnectionDefsFile: string read  FConnectionDefsFile;
     property StatusFile: string read FStatusFile;
     property SeedFilesDir: string read FSeedFilesDir;
 
-    property Status: string read GetStatus write SetStatus;
+    property Status: string read GetStatus;
     property Defs: TArray<string> read GetDefs;
 
   end;
@@ -100,11 +101,16 @@ begin
   MigratorDir := FDExpandStr(WorkDir);
 end;
 
-function TDbMigratorEngine.GetStepFilesDir: string;
+procedure TDbMigratorEngine.CheckInitDone;
 begin
+  if not TDirectory.Exists(FMigratorDir) then
+    raise Exception.CreateFmt('Work dir "%s" not found. Use init command', [FMigratorDir]);
+
+  if not TFile.Exists(FConnectionDefsFile) then
+    raise Exception.CreateFmt('ConnectionDef file "%s" not found. Use init command', [FConnectionDefsFile]);
+
   if not TDirectory.Exists(FStepFilesDir) then
-    raise Exception.CreateFmt('No Steps direcotry found in %s', [MigratorDir]);
-  Result := FStepFilesDir;
+    raise Exception.CreateFmt('Steps direcotry "%s" not found. Use init command', [FStepFilesDir]);
 end;
 
 procedure TDbMigratorEngine.OnConsolePut(AEngine: TFDScript;
@@ -188,7 +194,7 @@ begin
     Script.Macros.MacroByName('DriverID').AsRaw := Connection.DriverName;
     var
     Content := TFile.ReadAllText(TPath.Combine(StepFilesDir, Step.Script));
-    Content := Self.PreprocessScript(Content, Mode);
+    Content := PreprocessScript(Content, Mode);
     var
     SQLStep := Script.SQLScripts.Add;
     SQLStep.SQL.Text := Content;
@@ -202,8 +208,18 @@ begin
   end;
 end;
 
+
+procedure TDbMigratorEngine.UpdateStatus(StepID: string);
+begin
+  if not FDryRun then
+    FStatus := StepID;
+  SaveStatus;
+  Write('status updated')
+end;
+
 procedure TDbMigratorEngine.DbUp(N: Integer);
 begin
+  CheckInitDone;
   var
   Connection := TFDConnection.Create(nil);
   var
@@ -220,8 +236,7 @@ begin
       begin
         if not Script.ScriptOptions.ConsoleOutput then
           WriteLn(' ok');
-        if not FDryRun then
-          Status := Step.ID;
+        UpdateStatus(Step.ID);
       end;
       Dec(N);
     end;
@@ -232,6 +247,7 @@ end;
 
 procedure TDbMigratorEngine.DbDown(N: Integer);
 begin
+  CheckInitDone;
   var
   Connection := TFDConnection.Create(nil);
   var
@@ -240,6 +256,7 @@ begin
   Steps := GetSteps([Applied], True);
   var
   StepsCount := Length(Steps);
+
   SetLength(Steps, StepsCount + 1);
   try
     for var idx := 0 to StepsCount - 1 do
@@ -255,8 +272,7 @@ begin
       begin
         if not Script.ScriptOptions.ConsoleOutput then
           WriteLn(' ok');
-        if not FDryRun then
-          Status := Steps[idx + 1].ID;
+        UpdateStatus(Steps[idx + 1].ID);
       end;
       Dec(N);
     end;
@@ -267,8 +283,7 @@ end;
 
 procedure TDbMigratorEngine.LoadStatus;
 begin
-  if not TDirectory.Exists(FMigratorDir) then
-    raise Exception.CreateFmt('Work dir not found: %s', [FMigratorDir]);
+  CheckInitDone;
   if not TFile.Exists(StatusFile) then
     FStatus := ' '
   else
@@ -277,6 +292,7 @@ end;
 
 procedure TDbMigratorEngine.SaveStatus;
 begin
+  CheckInitDone;
   var
   StatusFile := TPath.Combine(FMigratorDir, '.status');
   TFile.WriteAllText(StatusFile, FStatus);
@@ -285,6 +301,7 @@ end;
 function TDbMigratorEngine.GetSteps(Criteria: TStepsCriteria;
   Reverse: Boolean = False): TArray<TStep>;
 begin
+  CheckInitDone;
   var
     Temp: TArray<TStep> := [];
   var
@@ -347,7 +364,7 @@ end;
 
 procedure TDbMigratorEngine.Init;
 begin
-  CreateFile(MigratorDir,  'FConnectionDefsFile.ini', FDConnectionDefsTT);
+  CreateFile(MigratorDir,  'FDConnectionDefs.ini', FDConnectionDefsTT);
   CreateFile(StepFilesDir,  '__prelude__', PreludeTT);
   CreateFile(StepFilesDir,  '__MySQL.prelude', MySQLPreludeTT);
   CreateFile(StepFilesDir,  '__MSSQL.prelude', MSSQLPreludeTT);
@@ -360,19 +377,11 @@ begin
   Reset;
 end;
 
-procedure TDbMigratorEngine.SetStatus(const Value: string);
-begin
-  FStatus := Value;
-  SaveStatus;
-  Write('status updated')
-end;
-
 function TDbMigratorEngine.GetDefs: TArray<string>;
 begin
   if FDefs = nil then
   begin
-    if not TFile.Exists(FConnectionDefsFile) then
-      raise Exception.CreateFmt('No ConnectionDef fileName found in %s', [MigratorDir]);
+    CheckInitDone;
     FDManager.ConnectionDefFileName := FConnectionDefsFile;
     var
     List := TStringList.Create;
