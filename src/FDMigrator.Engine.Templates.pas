@@ -3,6 +3,12 @@
 interface
 
 const
+  DefaultConfigTT = '''
+{
+  "status": ""
+}
+''';
+
   DefaultTT = '''
 @__prelude__.
 

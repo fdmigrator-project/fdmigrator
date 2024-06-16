@@ -35,7 +35,7 @@ Use the integrated help in the tool:
 
 ```powershell
 c:\>fdmigrator help
-fdmigrator v0.8.0 | (c)2024, j.cangas@pm.me
+fdmigrator v0.9.0 | (c) 2024, j.cangas@pm.me
 
 Usage: fdmigrator <global options> <command> <arguments>
 
@@ -45,29 +45,34 @@ Global Options:
 
 Commands and Arguments:
   init            Creates the working structure in <WorkDir>
+    [--seq [fmt]]       Selects Sequential format for step prefix, i.e. 00001-Create_Customer_Table.sql. 
+                        Default fmt is "00000". Use a fmt compatible with Delphi FormatFloat.
+    [--TS  [fmt]]       Selects TimeStamp format for step prefix, i.e. 20240616132951508-Create_Customer_Table.sql. 
+                        Default fmt is "yyyymmddhhnnsszzz". Use a fmt compatible with Delphi FormatDateTime.
+                        --TS is the default option
 
   steps           Lists the steps pending application.
-    -a            Lists all steps
+    [-a]            Lists all steps
 
   status          Displays the last applied step.
 
   new             Creates a new migration step.
     -d            Description. Required. Used to generate the step file name
-    -t            Template to use ("table" or "default")
+    [-t]            Template to use ("table" or "default")
 
   defs            Displays the connection names in use. Names starting with "!" are ignored.
 
   up              Applies all pending steps.
-    -n <n>        Applies only the next <n> steps.
+    [-n <n>]        Applies only the next <n> steps.
 
   down            Reverts the last applied step.
-    -n <n>        Reverts the next <n> steps. Pass * for all.
+    [-n <n>]        Reverts the next <n> steps. Pass * for all.
 
   help            Displays this help.
 
 Usage Examples:
 
-fdmigrator -w ./db steps list
+fdmigrator -w ./db steps
 Uses "./db" as the working directory and lists the pending migration steps.
 
 fdmigrator -w ./db up -n 3

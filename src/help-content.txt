@@ -1,31 +1,36 @@
 ﻿Help_es_ES = '''
-{product} v{version} | (c)2024, j.cangas@pm.me
+{product} v{version} | (c) 2024, j.cangas@pm.me
 
 Uso: {product} <opciones globales> <comando> <argumentos>
 
 Opciones Globales:
-  -w <WorkDir>    Establece el directorio de trabajo. Por defecto es "./migrations".
-  -d              (dry-run). Ejecuta el proceso sin aplicar cambios.
+  [-w <WorkDir>]    Establece el directorio de trabajo. Por defecto es "./migrations".
+  [-d]              (dry-run). Ejecuta el proceso sin aplicar cambios.
 
 Comandos y Argumentos:
   init            Crea la estructura de trabajo en <WorkDir>
+    [--seq [fmt]]       Selecciona formato sequencial como prefijo de paso, i.e. 00001-Crear_Tabla_Clientes.sql. 
+                        Por defecto fmt is "00000". Debe usaer un valor compatible con Delphi FormatFloat.
+    [--TS  [fmt]]       Seleccion formato TimeStamp como prefijo de paso, i.e. 20240616132951508-Crear_Tabla_Clientes.sql. 
+                        Por defecto fmt es "yyyymmddhhnnsszzz". Debe usar un valor compatible con Delphi FormatDateTime.
+                        --TS es la opción por defecto
 
   steps           Lista los pasos pendientes de aplicar.
-    -a            Lista todos los pasos
+    [-a]            Lista todos los pasos
 
   status          Muestra el último paso aplicado.
 
   new             Crea un nuevo step de migración.
     -d            Descripción. Requerido. Usado para generar el nombre del fichero step
-    -t            Plantilla a utilizar ("table" o "default")
+    [-t <plantilla>]            Plantilla a utilizar ("table" o "default")
 
   defs            Muestra los nombres de conexión en uso. Los nombre que empiezan con "!" se ignoran.
 
   up              Aplica los todos pasos pendientes.
-    -n <n>        Aplica solo los siguientes <n> pasos.
+    [-n <n>]        Aplica solo los siguientes <n> pasos.
 
   down            Revierte el ultimo paso aplicado.
-    -n <n>        Revierte los siguientes <n> pasos. Pasar * para todos.
+    [-n <n>]        Revierte los siguientes <n> pasos. Pasar * para todos.
 
 
   help            Muestra esta ayuda.
@@ -53,7 +58,7 @@ Ejemplos de Uso:
 ''';
 
 Help_en_GB = '''
-{product} v{version} | (c)2024, j.cangas@pm.me
+{product} v{version} | (c) 2024, j.cangas@pm.me
 
 Usage: {product} <global options> <command> <arguments>
 
@@ -63,23 +68,28 @@ Global Options:
 
 Commands and Arguments:
   init            Creates the working structure in <WorkDir>
+    [--seq [fmt]]       Selects Sequential format for step prefix, i.e. 00001-Create_Customer_Table.sql. 
+                        Default fmt is "00000". Use a fmt compatible with Delphi FormatFloat.
+    [--TS  [fmt]]       Selects TimeStamp format for step prefix, i.e. 20240616132951508-Create_Customer_Table.sql. 
+                        Default fmt is "yyyymmddhhnnsszzz". Use a fmt compatible with Delphi FormatDateTime.
+                        --TS is the default option
 
   steps           Lists the steps pending application.
-    -a            Lists all steps
+    [-a]            Lists all steps
 
   status          Displays the last applied step.
 
   new             Creates a new migration step.
     -d            Description. Required. Used to generate the step file name
-    -t            Template to use ("table" or "default")
+    [-t]            Template to use ("table" or "default")
 
   defs            Displays the connection names in use. Names starting with "!" are ignored.
 
   up              Applies all pending steps.
-    -n <n>        Applies only the next <n> steps.
+    [-n <n>]        Applies only the next <n> steps.
 
   down            Reverts the last applied step.
-    -n <n>        Reverts the next <n> steps. Pass * for all.
+    [-n <n>]        Reverts the next <n> steps. Pass * for all.
 
   help            Displays this help.
 

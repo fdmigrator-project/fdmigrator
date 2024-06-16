@@ -13,7 +13,7 @@ type
 
   TDbMigratorRunner = class
   public const
-    Version = '0.8.0';
+    Version = '0.9.0';
     Product = 'fdmigrator';
 
   public type
@@ -116,6 +116,9 @@ procedure TDbMigratorRunner.ProcessOption(var ParamIdx: Integer);
 begin
   var
   Option := UpperCase(Copy(ParamStr(ParamIdx), 2));
+  if Option.StartsWith('-') then
+    Delete(Option,1, 1);
+
   if FCommand <> unknown then
   begin
     Inc(ParamIdx);
@@ -201,7 +204,11 @@ end;
 
 procedure TDbMigratorRunner.DoStatusCmd;
 begin
-  Writeln('Last Step: ' + Engine.status);
+  var StatusText := 'Last Step: ' + Engine.Config.Status;
+  if Engine.Config.Status.IsEmpty then
+    StatusText := 'No steps applied';
+
+  Writeln(StatusText);
 end;
 
 procedure TDbMigratorRunner.DoDefsCmd;
@@ -249,13 +256,35 @@ end;
 
 procedure TDbMigratorRunner.DoInitCmd;
 begin
-  Engine.Init;
+  var Kind: TStepIDKind;
+  var Fmt: string;
+
+  if FCommandOpts.ContainsKey('SEQ') then
+  begin
+    kind := TStepIDKind.Sequence;
+    if (FCommandOpts['SEQ'] = '') then
+      Fmt := '00000'
+    else
+      Fmt := FCommandOpts['SEQ']
+  end
+  else if FCommandOpts.ContainsKey('TS') or FCommandOpts.IsEmpty then
+  begin
+    kind := TStepIDKind.TimeStamp;
+    if FCommandOpts.IsEmpty or (FCommandOpts['TS'] = '')  then
+      Fmt := 'yyyymmddhhnnsszzz'
+    else
+      Fmt := FCommandOpts['TS']
+  end
+  else
+    raise Exception.Create( 'Inavlid option ' + FCommandOpts.Keys.ToArray[0]);
+
+  Engine.Init(Kind, Fmt);
 end;
 
 procedure TDbMigratorRunner.DoNewCmd;
 begin
   if not FCommandOpts.ContainsKey('D') or  FCommandOpts['D'].IsEmpty then
-    raise Exception.Create( 'falta -d ');
+    raise Exception.Create( 'missing -d arg');
 
   var Name := FCommandOpts['D'];
   if not FCommandOpts.ContainsKey('T') then
