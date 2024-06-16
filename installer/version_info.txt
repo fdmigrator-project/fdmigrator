@@ -1,5 +1,5 @@
 ﻿#define MyAppName "fdmigrator"
-#define MyAppVersion "0.8.0"
+#define MyAppVersion "0.9.0"
 #define MyAppPublisher "j.cangas@pm.me"
 #define MyAppURL "https://github.com/jcangas/fdmigrator"
 #define MyAppExeName "fdmigrator.exe"

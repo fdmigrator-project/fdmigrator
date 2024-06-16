@@ -33,7 +33,7 @@ DefaultDirName={pf}\{#MyAppPublisher}\{#MyAppName}
 DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-OutputDir=.\out
+OutputDir=..\out
 OutputBaseFilename={#MyAppName}Setup-{#MyAppVersion}{#SetupSufix}
 Compression=lzma
 SolidCompression=yes
@@ -74,7 +74,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: ".\out\Win32\{#BuildConfig}\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\out\Win32\{#BuildConfig}\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
