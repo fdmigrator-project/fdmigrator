@@ -2,7 +2,7 @@
 setlocal enableextensions enabledelayedexpansion
 
 set SELF_NAME=%~n0
-set SELF_VS=2.1
+set SELF_VS=2.2
 
 set "PRJ_ROOT_KEY=USR_PRJ"
 
@@ -75,37 +75,37 @@ call :BANNER
 :: select command
 
 if (%1)==(i) (
-call :INSPECT
+call :INSPECT %*
 exit /B 0
 )
 
 if (%1)==(env) (
-call :ENV
+call :ENV %*
 exit /B 0
 ) 
 
 if (%1)==(clean) (
-call :CLEAN
+call :CLEAN %*
 exit /B 0
 ) 
 
 if (%1)==(make) (
-call :MAKE
+call :MAKE %*
 exit /B 0
 ) 
 
 if (%1)==(build) (
-call :BUILD
-exit /B 0
+call :BUILD %*
+exit /B 0  %*
 ) 
 
 if (%1)==(inno) (
-iscc /Qp .\AppSetup.iss /DBuildConfig=Release
+call :INNO %*
 exit /B 0
 ) 
 
 :: default command is start ide
-call :START
+call :START %*
 goto :eof
 
 :: Error handling
@@ -133,7 +133,7 @@ SET BDS
 exit /B 0
 
 :INNO
-iscc /Qp .\AppSetup.iss /DBuildConfig=Release
+iscc /Qp .\installer\AppSetup.iss /DBuildConfig=Release
 exit /B 0
 
 :MAKE
